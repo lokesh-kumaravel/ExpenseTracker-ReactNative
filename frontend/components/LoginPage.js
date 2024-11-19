@@ -33,7 +33,7 @@ const LoginPage = ({ navigation }) => {
         console.log("Token : " + response.data.token);
         localStorage.setItem("token", response.data.token);
         setError(response.data.message);
-        navigation.navigate("Home");
+        navigation.navigate("HomeTabs");
       } else {
         setError(response.data.message || "Login failed. Try again.");
       }
