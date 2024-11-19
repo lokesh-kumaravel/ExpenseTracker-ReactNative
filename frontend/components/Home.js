@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
 import Transaction from "./Transaction";
+import BarChartExample from "./BarChartExample";
 
 const { width, height } = Dimensions.get("window");
 
@@ -18,7 +19,7 @@ const Home = () => {
       </View>
       <View
         style={[
-          { alignContent: "center", alignItems: "center", paddingTop: "10%" },
+          { alignContent: "center", alignItems: "center", paddingTop: "3%" },
         ]}
       >
         <View style={[styles.box, { backgroundColor: "#2c3e50" }]}>
@@ -38,6 +39,7 @@ const Home = () => {
           </View>
         </View>
       </View>
+      {/* <BarChartExample /> */}
       <Transaction />
     </View>
   );

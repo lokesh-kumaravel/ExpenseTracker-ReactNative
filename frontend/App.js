@@ -20,6 +20,8 @@ const TabNavigator = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { backgroundColor: "#f8f9fa" },
+        tabBarActiveTintColor: "#ff6347", // Active tab color (Tomato red)
+        tabBarInactiveTintColor: "#6c757d", // Inactive tab color (Gray)
       }}
     >
       <Tab.Screen
@@ -53,6 +55,44 @@ const TabNavigator = () => {
         }}
       />
     </Tab.Navigator>
+
+    // <Tab.Navigator
+    //   screenOptions={{
+    //     headerShown: false,
+    //     tabBarStyle: { backgroundColor: "#f8f9fa" },
+    //   }}
+    // >
+    //   <Tab.Screen
+    //     name="Home"
+    //     component={Home}
+    //     options={{
+    //       tabBarLabel: "Home",
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="home" size={size} color={color} />
+    //       ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name="Expense"
+    //     component={Expense}
+    //     options={{
+    //       tabBarLabel: "Expense",
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="credit-card" size={size} color={color} />
+    //       ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name="Profile"
+    //     component={Profile}
+    //     options={{
+    //       tabBarLabel: "Profile",
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="user" size={size} color={color} />
+    //       ),
+    //     }}
+    //   />
+    // </Tab.Navigator>
     // <Tab.Navigator
     //   screenOptions={{
     //     headerShown: false,
