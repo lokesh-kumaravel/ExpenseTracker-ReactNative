@@ -23,7 +23,11 @@ const Transaction = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Transactions</Text>
 
-      <ScrollView style={styles.transactionList}>
+      <ScrollView
+        style={styles.transactionList}
+        showsHorizontalScrollIndicator={false} // This hides the horizontal scrollbar
+        showsVerticalScrollIndicator={false} // This hides the vertical scrollbar (if needed)
+      >
         {transactions.map((transaction) => (
           <View key={transaction.id} style={styles.transactionItem}>
             <Text style={styles.transactionTitle}>{transaction.title}</Text>

@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
 import Transaction from "./Transaction";
 import BarChartExample from "./BarChartExample";
+import { ScrollView } from "react-native-web";
 
 const { width, height } = Dimensions.get("window");
 
@@ -17,29 +18,37 @@ const Home = () => {
         />
         <Text style={styles.heading}>Home</Text>
       </View>
-      <View
-        style={[
-          { alignContent: "center", alignItems: "center", paddingTop: "3%" },
-        ]}
+      <ScrollView
+        style={{ height: "20%" }}
+        showsHorizontalScrollIndicator={false} // This hides the horizontal scrollbar
+        showsVerticalScrollIndicator={false} // This hides the vertical scrollbar (if needed)
       >
-        <View style={[styles.box, { backgroundColor: "#2c3e50" }]}>
-          {" "}
-          <View style={[{ paddingLeft: "5%", paddingTop: "7%" }]}>
-            <Text style={[styles.text, { fontSize: "30px", color: "#d0d3d4" }]}>
-              Total Balance{" "}
-            </Text>
-            <Text
-              style={[styles.text, { fontWeight: "bold", fontSize: "40px" }]}
-            >
-              $75,000
-            </Text>
-            <Text
-              style={[styles.text, { fontWeight: "bold", fontSize: "30px" }]}
-            ></Text>
+        <View
+          style={[
+            { alignContent: "center", alignItems: "center", paddingTop: "3%" },
+          ]}
+        >
+          <View style={[styles.box, { backgroundColor: "#2c3e50" }]}>
+            {" "}
+            <View style={[{ paddingLeft: "5%", paddingTop: "7%" }]}>
+              <Text
+                style={[styles.text, { fontSize: "30px", color: "#d0d3d4" }]}
+              >
+                Total Balance{" "}
+              </Text>
+              <Text
+                style={[styles.text, { fontWeight: "bold", fontSize: "40px" }]}
+              >
+                $75,000
+              </Text>
+              <Text
+                style={[styles.text, { fontWeight: "bold", fontSize: "30px" }]}
+              ></Text>
+            </View>
           </View>
         </View>
-      </View>
-      {/* <BarChartExample /> */}
+        <BarChartExample />
+      </ScrollView>
       <Transaction />
     </View>
   );
@@ -58,7 +67,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
+    backgroundColor: "#fcf1ff",
     padding: 16,
   },
   header: {
@@ -73,7 +83,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: "Times New Roman",
-    fontSize: "50px",
+    fontSize: "40px",
     fontWeight: "bold",
   },
 });
