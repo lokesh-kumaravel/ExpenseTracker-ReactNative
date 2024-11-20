@@ -1,0 +1,114 @@
+1. USER MODEL
+{
+  "_id": "60c72b2f9b1d8e5f7d8e1b77",
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "password": "hashed_password_here",
+  "createdAt": "2024-11-19T10:00:00Z"
+}
+
+2. Category Model
+[
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b78",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "name": "Food",
+    "createdAt": "2024-11-19T10:05:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b79",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "name": "Transport",
+    "createdAt": "2024-11-19T10:06:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b80",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "name": "Bills",
+    "createdAt": "2024-11-19T10:07:00Z"
+  }
+]
+
+ 3. Expense Model
+[
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b81",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b78",
+    "amount": 50,
+    "description": "Grocery shopping",
+    "date": "2024-11-15T09:30:00Z",
+    "notes": "Bought fruits and vegetables",
+    "createdAt": "2024-11-15T09:35:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b82",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b79",
+    "amount": 20,
+    "description": "Bus ticket",
+    "date": "2024-11-16T08:00:00Z",
+    "notes": "Commuted to work",
+    "createdAt": "2024-11-16T08:10:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b83",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b80",
+    "amount": 100,
+    "description": "Electricity bill",
+    "date": "2024-11-18T15:45:00Z",
+    "notes": "Monthly electricity bill payment",
+    "createdAt": "2024-11-18T15:50:00Z"
+  }
+]
+
+4. Budget Model
+[
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b84",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b78",
+    "limit": 200,
+    "createdAt": "2024-11-19T10:10:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b85",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b79",
+    "limit": 100,
+    "createdAt": "2024-11-19T10:15:00Z"
+  },
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b86",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "categoryId": "60c72b2f9b1d8e5f7d8e1b80",
+    "limit": 150,
+    "createdAt": "2024-11-19T10:20:00Z"
+  }
+]
+
+5. Report Model
+[
+  {
+    "_id": "60c72b2f9b1d8e5f7d8e1b87",
+    "userId": "60c72b2f9b1d8e5f7d8e1b77",
+    "totalExpenses": 170,
+    "categoryWiseSummary": [
+      {
+        "categoryId": "60c72b2f9b1d8e5f7d8e1b78",
+        "totalAmount": 50
+      },
+      {
+        "categoryId": "60c72b2f9b1d8e5f7d8e1b79",
+        "totalAmount": 20
+      },
+      {
+        "categoryId": "60c72b2f9b1d8e5f7d8e1b80",
+        "totalAmount": 100
+      }
+    ],
+    "period": "monthly",
+    "createdAt": "2024-11-30T10:30:00Z"
+  }
+]

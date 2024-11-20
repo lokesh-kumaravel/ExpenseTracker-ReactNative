@@ -10,6 +10,8 @@ import Profile from "./components/Profile";
 import Expense from "./components/Expense";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Ionicons icon set
+import AddContent from "./components/AddContent";
+import { PieChart } from "react-native-chart-kit";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,6 +43,27 @@ const TabNavigator = () => {
           tabBarLabel: "Expense",
           tabBarIcon: ({ color, size }) => (
             <Icon name="credit-card" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddContent"
+        component={AddContent}
+        options={{
+          tabBarLabel: "Add",
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="plus" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Expense Breakdown"
+        component={PieChart} // PieChartComponent is your new component
+        options={{
+          tabBarLabel: "Expense Breakdown", // The label for this tab
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="pie-chart" size={size} color={color} /> // You can use any icon
           ),
         }}
       />
