@@ -28,3 +28,22 @@ A full-stack mobile application that allows users to track their personal expens
 - **Libraries**: 
   - `bcryptjs` for password hashing.
   - `jsonwebtoken` for creating and verifying tokens.
+
+## ⚙📁 Project Structure
+  ```
+      📁 NATIVE/
+      ├── 📂 backend/                    # Backend directory
+      │   ├── 📂 controllers/             # Contains request handling logic
+      │   ├── 📂 models/                  # Contains MongoDB models 
+      │   ├── 📂 routes/                  # API route definitions
+      │   ├── 🌳 .env                     # Environment variables
+      │   ├── ⚙️ config/                  # DB connection and other config
+      │   └── 📄 index.js                 # Main server entry point (Express setup)
+      │
+      ├── 📂 frontend/                   # Frontend directory 
+      │   ├── 📂 components/              # React components 
+      │   ├── 📂 context/                 # React Context for global state management
+      │   ├── 🌳 .env                     # Frontend environment variables
+      │   └── 📄 package.json             # Frontend dependencies
+      │
+      └── 📄 README.md                   # Project documentation (this file)
