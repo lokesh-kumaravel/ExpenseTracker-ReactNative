@@ -8,6 +8,7 @@ const morgan = require("morgan");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
+const AddRoute = require("./routes/AddRoute");
 
 const app = express();
 
@@ -24,7 +25,8 @@ mongoose
   .catch((err) => console.log("Error connecting to MongoDB: ", err));
 
 app.use("/api/auth", authRoutes);
-
+app.use("/api/categories", AddRoute);
+app.use("/api", AddRoute);
 app.get("/", (req, res) => {
   res.send("Hello, this is your backend server!");
 });

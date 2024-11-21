@@ -1,3 +1,4 @@
+import axiosInstance from "../BaseURL";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,40 +9,68 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
-import axios from "axios";
 
 const AddContent = () => {
   const [isExpense, setIsExpense] = useState(true);
   const [categories, setCategories] = useState([]);
+  const UserId = localStorage.getItem("UserId");
   const [expenseData, setExpenseData] = useState({
+    userId: UserId,
     categoryId: "",
     amount: "",
     description: "",
     date: "",
     notes: "",
   });
+  // console.log(UserId);
   const [categoryData, setCategoryData] = useState({
     name: "",
+    userId: UserId,
   });
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const UserId = localStorage.getItem("UserId");
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("/api/categories");
-        console.log("Categories response:", response.data);
-        if (Array.isArray(response.data)) {
-          setCategories(response.data);
+        const response = await axiosInstance.get("/categories", {
+          params: { userId: UserId },
+        });
+        // console.log("Categories response:", response.data);
+
+        if (
+          response.data.categoryDetails &&
+          Array.isArray(response.data.categoryDetails)
+        ) {
+          setCategories(response.data.categoryDetails);
         } else {
           setError("Invalid categories data format.");
         }
       } catch (err) {
+        // console.error("Failed to fetch categories:", err);
         setError("Failed to fetch categories.");
       }
     };
+
     fetchCategories();
   }, []);
 
+  const handleCategorySubmit = async () => {
+    if (!categoryData.name) {
+      Alert.alert("Error", "Please enter a category name.");
+      return;
+    }
+
+    try {
+      categoryData.userId = UserId;
+      // console.log(categoryData);
+      const response = await axiosInstance.post("/categories", categoryData);
+      Alert.alert("Success", "Category added successfully!");
+      setCategoryData({ name: "", userId: UserId });
+    } catch (err) {
+      Alert.alert("Error", "Failed to add category.");
+    }
+  };
   const handleExpenseChange = (name, value) => {
     setExpenseData({ ...expenseData, [name]: value });
   };
@@ -51,6 +80,10 @@ const AddContent = () => {
   };
 
   const handleExpenseSubmit = async () => {
+    // console.log("Adding the data here : " + expenseData.categoryId);
+    // console.log("Adding the data here : " + expenseData.amount);
+    // console.log("Adding the data here : " + expenseData.description);
+    // console.log("Adding the data here : " + expenseData.date);
     if (
       !expenseData.categoryId ||
       !expenseData.amount ||
@@ -62,7 +95,7 @@ const AddContent = () => {
     }
 
     try {
-      const response = await axios.post("/api/expenses", expenseData);
+      const response = await axiosInstance.post("/expenses", expenseData);
       Alert.alert("Success", "Expense added successfully!");
       setExpenseData({
         categoryId: "",
@@ -73,21 +106,6 @@ const AddContent = () => {
       });
     } catch (err) {
       Alert.alert("Error", "Failed to add expense.");
-    }
-  };
-
-  const handleCategorySubmit = async () => {
-    if (!categoryData.name) {
-      Alert.alert("Error", "Please enter a category name.");
-      return;
-    }
-
-    try {
-      const response = await axios.post("/api/categories", categoryData);
-      Alert.alert("Success", "Category added successfully!");
-      setCategoryData({ name: "" });
-    } catch (err) {
-      Alert.alert("Error", "Failed to add category.");
     }
   };
 
@@ -142,9 +160,9 @@ const AddContent = () => {
             {Array.isArray(categories) && categories.length > 0 ? (
               categories.map((category) => (
                 <Picker.Item
-                  key={category._id}
+                  key={category.id}
                   label={category.name}
-                  value={category._id}
+                  value={category.id}
                 />
               ))
             ) : (

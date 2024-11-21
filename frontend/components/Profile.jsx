@@ -25,19 +25,19 @@ const ProfilePage = ({ navigation }) => {
     salary: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("/api/users/me");
-        setUser(response.data);
-        setUpdatedUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        Alert.alert("Error", "Failed to load user data.");
-      }
-    };
-    fetchUserData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await axios.get("/api/users/me");
+  //       setUser(response.data);
+  //       setUpdatedUser(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       Alert.alert("Error", "Failed to load user data.");
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   const handleChange = (field, value) => {
     setUpdatedUser({ ...updatedUser, [field]: value });

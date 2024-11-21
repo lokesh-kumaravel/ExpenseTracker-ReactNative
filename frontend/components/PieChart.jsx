@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
+import { Calendar } from "react-native-calendars"; // Import the calendar component
 
-// Predefined expense data
 const predefinedExpenses = [
   { category: { name: "Food" }, amount: 100 },
   { category: { name: "Transport" }, amount: 50 },
@@ -12,16 +12,20 @@ const predefinedExpenses = [
 ];
 
 const PieChartComponent = () => {
+  const [selectedDate, setSelectedDate] = useState("");
+
   const [expensesData, setExpensesData] = useState([]);
 
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
   useEffect(() => {
-    // Categorize the expenses and set the data for the PieChart
     const categorizedData = categorizeExpenses(predefinedExpenses);
     setExpensesData(categorizedData);
   }, []);
 
   const categorizeExpenses = (expenses) => {
-    // Reduce the expenses into categories
     const categories = expenses.reduce((acc, expense) => {
       const category = expense.category.name;
       if (acc[category]) {
@@ -32,7 +36,6 @@ const PieChartComponent = () => {
       return acc;
     }, {});
 
-    // Map categories to the format required by PieChart
     const pieChartData = Object.keys(categories).map((category) => ({
       name: category,
       population: categories[category],
@@ -53,23 +56,76 @@ const PieChartComponent = () => {
     return color;
   };
 
-  // Debugging: Check if the data is correctly populated
   useEffect(() => {
     console.log("Expenses Data:", expensesData);
   }, [expensesData]);
+  const expensesPercentage = 75;
+  const savingsPercentage = 25;
 
   return (
     <View style={styles.container}>
+      <Calendar
+        style={{
+          width: "100%",
+          height: 300,
+          backgroundColor: "#f3f3f3",
+        }}
+        current={"2024-11-20"}
+        minDate={"2023-01-01"}
+        maxDate={"2025-12-31"}
+        onDayPress={handleDayPress}
+        monthFormat={"MM yyyy"}
+        theme={{
+          backgroundColor: "#f3f3f3",
+          selectedDayBackgroundColor: "red",
+          selectedDayBackgroundColor: "#1e90ff",
+          selectedDayTextColor: "white",
+          todayBackgroundColor: "#ff6347",
+          todayTextColor: "white",
+          arrowColor: "orange",
+          monthTextColor: "red",
+          fontWeight: "bold",
+          textDayHeaderFontWeight: "bold",
+          textMonthFontWeight: "bold",
+          textMonthFontWeight: "bold",
+        }}
+      />
+      {selectedDate ? (
+        <Text style={styles.selectedDate}>Selected Date: {selectedDate}</Text>
+      ) : (
+        <Text style={styles.selectedDate}>No date selected</Text>
+      )}
+      {/* <ExpenseBalanceBox
+        expensesPercentage={expensesPercentage}
+        savingsPercentage={savingsPercentage}
+      /> */}
       <Text style={styles.heading}>Your Expense Breakdown</Text>
+      <View style={styles.box}>
+        <View
+          style={[
+            styles.section,
+            { width: `${expensesPercentage}%`, backgroundColor: "red" },
+          ]}
+        >
+          <Text style={styles.text}>{`${expensesPercentage}% Expenses`}</Text>
+        </View>
 
-      {/* Show loading message if no data is available */}
+        <View
+          style={[
+            styles.section,
+            { width: `${savingsPercentage}%`, backgroundColor: "green" },
+          ]}
+        >
+          <Text style={styles.text}>{`${savingsPercentage}% Savings`}</Text>
+        </View>
+      </View>
       {expensesData.length === 0 ? (
         <Text style={styles.loading}>Loading data...</Text>
       ) : (
         <PieChart
-          data={expensesData} // Pie chart data
-          width={Dimensions.get("window").width - 40} // Set the width for the PieChart
-          height={220} // Set the height for the PieChart
+          data={expensesData}
+          width={Dimensions.get("window").width - 40}
+          height={220}
           chartConfig={{
             backgroundColor: "#e26a00",
             backgroundGradientFrom: "#fae9e4",
@@ -80,11 +136,11 @@ const PieChartComponent = () => {
               borderRadius: 16,
             },
           }}
-          accessor="population" // The key that represents the value of each slice
+          accessor="population"
           backgroundColor="transparent"
           paddingLeft="15"
-          center={[10, 20]} // Optional customization for pie chart center
-          absolute // To display the absolute value of each slice
+          center={[10, 20]}
+          absolute
         />
       )}
     </View>
@@ -93,6 +149,7 @@ const PieChartComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -108,6 +165,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     textAlign: "center",
+  },
+  box: {
+    width: "80%",
+    height: 60,
+    flexDirection: "row",
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  section: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    paddingHorizontal: 5,
+  },
+  text: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  selectedDate: {
+    fontSize: 18,
+    marginTop: 10,
+    marginBottom: 20,
   },
 });
 

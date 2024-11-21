@@ -30,8 +30,9 @@ const LoginPage = ({ navigation }) => {
       const response = await axiosInstance.post("/auth/login", data);
       if (response.status == 200) {
         Alert.alert("Success", "Login Successful!");
-        console.log("Token : " + response.data.token);
+        // console.log("Token : " + response.data.token);
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("UserId", response.data.userId);
         setError(response.data.message);
         navigation.navigate("HomeTabs");
       } else {
