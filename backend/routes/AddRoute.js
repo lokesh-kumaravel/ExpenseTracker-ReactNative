@@ -5,9 +5,7 @@ const Expense = require("../models/Expense");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  // console.log(req.body);
   const { userId, name } = req.body;
-  // console.log(userId, name);
   try {
     if (!userId || !name) {
       return res.status(400).json({ message: "userId and name are required" });
@@ -29,7 +27,6 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const { userId } = req.query;
-  // console.log("User ID:", userId);
 
   try {
     if (!userId) {
@@ -45,10 +42,9 @@ router.get("/", async (req, res) => {
     }
 
     const categoryDetails = categories.map((category) => ({
-      id: category._id, // Extracting the category's _id
-      name: category.name, // Extracting the category name
+      id: category._id,
+      name: category.name,
     }));
-    // console.log(categoryDetails);
     res.status(200).json({ categoryDetails });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -59,14 +55,9 @@ router.get("/", async (req, res) => {
 router.post("/expenses", async (req, res) => {
   const { userId, categoryId, amount, description, date, notes } = req.body;
 
-  // console.log("Received expense data:", {
-  //   userId,
-  //   categoryId,
-  //   amount,
-  //   description,
-  //   date,
-  //   notes,
-  // });
+  const expenseDate = new Date(date);
+  const year = expenseDate.getFullYear();
+  const month = expenseDate.getMonth() + 1;
 
   try {
     const newExpense = new Expense({
@@ -76,25 +67,37 @@ router.post("/expenses", async (req, res) => {
       description,
       date,
       notes,
+      year,
+      month,
     });
+
     await newExpense.save();
-    res
-      .status(201)
-      .json({ message: "Expense saved successfully", expense: newExpense });
+
+    res.status(201).json({
+      message: "Expense saved successfully",
+      expense: newExpense,
+    });
   } catch (error) {
     console.error("Error saving expense:", error);
-    res.status(500).json({ message: "Error saving expense", error });
+    res.status(500).json({
+      message: "Error saving expense",
+      error,
+    });
   }
 });
 
-// router.post("/expenses", async (req, res) => {
-//   const { userId, categoryId, amount, description, date, notes } = req.body;
-//   console.log(userId);
-//   console.log(categoryId);
-//   console.log(amount);
-//   console.log(description);
-//   console.log(date);
-//   console.log(notes);
-// });
+router.get("/expenses/:year/:month", async (req, res) => {
+  const { year, month } = req.params;
+
+  try {
+    const expenses = await Expense.find({ year, month });
+    res
+      .status(200)
+      .json({ message: "Expenses fetched successfully", expenses });
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    res.status(500).json({ message: "Error fetching expenses", error });
+  }
+});
 
 module.exports = router;

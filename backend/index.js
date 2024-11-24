@@ -1,4 +1,3 @@
-// server.js or app.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -9,6 +8,8 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
 const AddRoute = require("./routes/AddRoute");
+const ExpenseRoute = require("./routes/ExpenseRoute");
+const SalesRoute = require("./routes/SalesRoute");
 
 const app = express();
 
@@ -27,6 +28,8 @@ mongoose
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", AddRoute);
 app.use("/api", AddRoute);
+app.use("/api", ExpenseRoute);
+app.use("/api", SalesRoute);
 app.get("/", (req, res) => {
   res.send("Hello, this is your backend server!");
 });

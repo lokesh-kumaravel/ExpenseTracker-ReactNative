@@ -1,45 +1,50 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native-web";
-
-const transactions = [
-  { id: 1, title: "Purchase at Store", amount: "-$45.00", date: "2024-11-19" },
-  { id: 2, title: "Salary Payment", amount: "$3,000.00", date: "2024-11-18" },
-  { id: 3, title: "Coffee Shop", amount: "-$5.00", date: "2024-11-17" },
-  { id: 4, title: "Refund from Store", amount: "$20.00", date: "2024-11-16" },
-  { id: 5, title: "Restaurant", amount: "-$30.00", date: "2024-11-15" },
-  { id: 6, title: "Grocery Store", amount: "-$70.00", date: "2024-11-14" },
-  { id: 7, title: "Grocery Store", amount: "-$70.00", date: "2024-11-14" },
-  { id: 8, title: "Grocery Store", amount: "-$70.00", date: "2024-11-14" },
-];
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native-web";
+import { CommonContext } from "./CommonContext";
 
 const Transaction = () => {
+  const { expenses, error } = useContext(CommonContext);
+
+  if (error) {
+    return <Text style={styles.errorText}>Error: {error}</Text>;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Transactions</Text>
+      <Text style={styles.header}>Expenses</Text>
 
       <ScrollView
         style={styles.transactionList}
-        showsHorizontalScrollIndicator={false} // This hides the horizontal scrollbar
-        showsVerticalScrollIndicator={false} // This hides the vertical scrollbar (if needed)
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
       >
-        {transactions.map((transaction) => (
-          <View key={transaction.id} style={styles.transactionItem}>
-            <Text style={styles.transactionTitle}>{transaction.title}</Text>
-            <Text style={styles.transactionAmount}>{transaction.amount}</Text>
-            <Text style={styles.transactionDate}>{transaction.date}</Text>
-          </View>
-        ))}
+        {expenses.length > 0 ? (
+          expenses.map((transaction) => (
+            <View key={transaction._id} style={styles.transactionItem}>
+              <Text style={styles.transactionTitle}>
+                {transaction.description}
+              </Text>
+              <Text style={styles.transactionAmount}>
+                {transaction.amount < 0
+                  ? `-${transaction.amount}`
+                  : `+${transaction.amount}`}
+              </Text>
+              <Text style={styles.transactionDate}>
+                {new Date(transaction.date).toLocaleDateString()}
+              </Text>
+            </View>
+          ))
+        ) : (
+          <Text>No transactions found.</Text>
+        )}
       </ScrollView>
 
-      {/* <TouchableOpacity style={styles.seeAllButton}>
-            <Text style={styles.seeAllText}>See All</Text>
-        </TouchableOpacity> */}
+      {/* Uncomment and customize this button if you need a "See All" button */}
+      {/* 
+      <TouchableOpacity style={styles.seeAllButton}>
+        <Text style={styles.seeAllText}>See All</Text>
+      </TouchableOpacity> 
+      */}
     </View>
   );
 };
@@ -47,7 +52,6 @@ const Transaction = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    // backgroundColor: "#f4f4f4",
     flex: 1,
   },
   header: {
@@ -84,6 +88,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
     color: "#7f8c8d",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    fontSize: 16,
   },
   seeAllButton: {
     marginTop: 10,

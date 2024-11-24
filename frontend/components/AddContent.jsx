@@ -1,5 +1,4 @@
-import axiosInstance from "../BaseURL";
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,68 +8,27 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
+import { CommonContext } from "./CommonContext";
+import axiosInstance from "../BaseURL";
 
 const AddContent = () => {
   const [isExpense, setIsExpense] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const UserId = localStorage.getItem("UserId");
   const [expenseData, setExpenseData] = useState({
-    userId: UserId,
+    userId: localStorage.getItem("UserId"),
     categoryId: "",
     amount: "",
     description: "",
     date: "",
     notes: "",
   });
-  // console.log(UserId);
   const [categoryData, setCategoryData] = useState({
     name: "",
-    userId: UserId,
+    userId: localStorage.getItem("UserId"),
   });
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const UserId = localStorage.getItem("UserId");
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/categories", {
-          params: { userId: UserId },
-        });
-        // console.log("Categories response:", response.data);
+  const { categories, error, addExpense, fetchSalesData } =
+    useContext(CommonContext);
 
-        if (
-          response.data.categoryDetails &&
-          Array.isArray(response.data.categoryDetails)
-        ) {
-          setCategories(response.data.categoryDetails);
-        } else {
-          setError("Invalid categories data format.");
-        }
-      } catch (err) {
-        // console.error("Failed to fetch categories:", err);
-        setError("Failed to fetch categories.");
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  const handleCategorySubmit = async () => {
-    if (!categoryData.name) {
-      Alert.alert("Error", "Please enter a category name.");
-      return;
-    }
-
-    try {
-      categoryData.userId = UserId;
-      // console.log(categoryData);
-      const response = await axiosInstance.post("/categories", categoryData);
-      Alert.alert("Success", "Category added successfully!");
-      setCategoryData({ name: "", userId: UserId });
-    } catch (err) {
-      Alert.alert("Error", "Failed to add category.");
-    }
-  };
   const handleExpenseChange = (name, value) => {
     setExpenseData({ ...expenseData, [name]: value });
   };
@@ -79,11 +37,21 @@ const AddContent = () => {
     setCategoryData({ ...categoryData, [name]: value });
   };
 
+  const handleCategorySubmit = async () => {
+    if (!categoryData.name) {
+      Alert.alert("Error", "Please enter a category name.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("/categories", categoryData);
+      Alert.alert("Success", "Category added successfully!");
+      setCategoryData({ name: "", userId: categoryData.userId });
+    } catch (err) {
+      Alert.alert("Error", "Failed to add category.");
+    }
+  };
   const handleExpenseSubmit = async () => {
-    // console.log("Adding the data here : " + expenseData.categoryId);
-    // console.log("Adding the data here : " + expenseData.amount);
-    // console.log("Adding the data here : " + expenseData.description);
-    // console.log("Adding the data here : " + expenseData.date);
     if (
       !expenseData.categoryId ||
       !expenseData.amount ||
@@ -94,9 +62,53 @@ const AddContent = () => {
       return;
     }
 
+    let userId;
     try {
-      const response = await axiosInstance.post("/expenses", expenseData);
+      userId = await localStorage.getItem("UserId");
+      if (!userId) {
+        Alert.alert("Error", "User is not authenticated. Please log in.");
+        return;
+      }
+    } catch (error) {
+      console.error("Error retrieving userId from localStorage:", error);
+      Alert.alert("Error", "Failed to retrieve user data.");
+      return;
+    }
+
+    const expenseDate = new Date(expenseData.date);
+    const year = expenseDate.getFullYear();
+    const month = expenseDate.getMonth() + 1;
+
+    const expensePayload = {
+      userId: userId,
+      categoryId: expenseData.categoryId,
+      amount: expenseData.amount,
+      description: expenseData.description,
+      date: expenseData.date,
+      notes: expenseData.notes,
+      year: year,
+      month: month,
+    };
+
+    const salesPayload = {
+      userId: userId,
+      year: year,
+      month: month,
+      amount: expenseData.amount,
+    };
+
+    try {
+      const expenseResponse = await axiosInstance.post(
+        "/expenses",
+        expensePayload
+      );
       Alert.alert("Success", "Expense added successfully!");
+
+      const salesResponse = await axiosInstance.post("/sales", salesPayload);
+      console.log("Sales data added successfully!", salesResponse.data);
+
+      addExpense(expenseResponse.data.expense);
+      fetchSalesData(year);
       setExpenseData({
         categoryId: "",
         amount: "",
@@ -105,7 +117,8 @@ const AddContent = () => {
         notes: "",
       });
     } catch (err) {
-      Alert.alert("Error", "Failed to add expense.");
+      Alert.alert("Error", "Failed to add expense and sales.");
+      console.error("Error adding expense and sales:", err);
     }
   };
 

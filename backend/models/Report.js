@@ -22,7 +22,7 @@ const reportSchema = new mongoose.Schema({
     },
   ],
   period: {
-    type: String, // e.g., 'monthly', 'yearly'
+    type: String,
     required: true,
   },
   createdAt: {
