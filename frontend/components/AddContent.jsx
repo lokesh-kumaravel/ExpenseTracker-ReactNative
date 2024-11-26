@@ -12,7 +12,7 @@ import { CommonContext } from "./CommonContext";
 import axiosInstance from "../BaseURL";
 
 const AddContent = () => {
-  const [isExpense, setIsExpense] = useState(true);
+  const [activeForm, setActiveForm] = useState("expense");
   const [expenseData, setExpenseData] = useState({
     userId: localStorage.getItem("UserId"),
     categoryId: "",
@@ -25,16 +25,17 @@ const AddContent = () => {
     name: "",
     userId: localStorage.getItem("UserId"),
   });
+  const [budgetData, setBudgetData] = useState({
+    userId: localStorage.getItem("UserId"),
+    categoryId: "",
+    limit: "",
+  });
 
   const { categories, error, addExpense, fetchSalesData } =
     useContext(CommonContext);
 
-  const handleExpenseChange = (name, value) => {
-    setExpenseData({ ...expenseData, [name]: value });
-  };
-
-  const handleCategoryChange = (name, value) => {
-    setCategoryData({ ...categoryData, [name]: value });
+  const handleInputChange = (name, value, setState) => {
+    setState((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleCategorySubmit = async () => {
@@ -51,6 +52,7 @@ const AddContent = () => {
       Alert.alert("Error", "Failed to add category.");
     }
   };
+
   const handleExpenseSubmit = async () => {
     if (
       !expenseData.categoryId ||
@@ -62,38 +64,20 @@ const AddContent = () => {
       return;
     }
 
-    let userId;
-    try {
-      userId = await localStorage.getItem("UserId");
-      if (!userId) {
-        Alert.alert("Error", "User is not authenticated. Please log in.");
-        return;
-      }
-    } catch (error) {
-      console.error("Error retrieving userId from localStorage:", error);
-      Alert.alert("Error", "Failed to retrieve user data.");
-      return;
-    }
-
     const expenseDate = new Date(expenseData.date);
     const year = expenseDate.getFullYear();
     const month = expenseDate.getMonth() + 1;
 
     const expensePayload = {
-      userId: userId,
-      categoryId: expenseData.categoryId,
-      amount: expenseData.amount,
-      description: expenseData.description,
-      date: expenseData.date,
-      notes: expenseData.notes,
-      year: year,
-      month: month,
+      ...expenseData,
+      year,
+      month,
     };
 
     const salesPayload = {
-      userId: userId,
-      year: year,
-      month: month,
+      userId: expenseData.userId,
+      year,
+      month,
       amount: expenseData.amount,
     };
 
@@ -122,77 +106,134 @@ const AddContent = () => {
     }
   };
 
+  const handleBudgetSubmit = async () => {
+    if (!budgetData.categoryId || !budgetData.limit) {
+      Alert.alert("Error", "Please select a category and set a budget limit.");
+      return;
+    }
+    console.log(budgetData);
+    try {
+      const response = await axiosInstance.post("/budgets", budgetData);
+      Alert.alert("Success", "Budget added successfully!");
+      setBudgetData({ categoryId: "", limit: "", userId: budgetData.userId });
+    } catch (err) {
+      Alert.alert("Error", "Failed to add budget.");
+      console.error("Error adding budget:", err);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>
-        {isExpense ? "Add Expense" : "Add Category"}
-      </Text>
+      <Text style={styles.heading}>Add Content</Text>
 
       {error && <Text style={styles.error}>{error}</Text>}
 
       <View style={styles.toggleButtons}>
-        <Button title="Add Expense" onPress={() => setIsExpense(true)} />
-        <Button title="Add Category" onPress={() => setIsExpense(false)} />
+        <Button title="Add Expense" onPress={() => setActiveForm("expense")} />
+        <Button
+          title="Add Category"
+          onPress={() => setActiveForm("category")}
+        />
+        <Button title="Add Budget" onPress={() => setActiveForm("budget")} />
       </View>
 
-      {isExpense ? (
+      {activeForm === "expense" && (
         <View style={styles.form}>
           <TextInput
             style={styles.input}
             placeholder="Amount"
             keyboardType="numeric"
             value={expenseData.amount}
-            onChangeText={(text) => handleExpenseChange("amount", text)}
+            onChangeText={(text) =>
+              handleInputChange("amount", text, setExpenseData)
+            }
           />
           <TextInput
             style={styles.input}
             placeholder="Description"
             value={expenseData.description}
-            onChangeText={(text) => handleExpenseChange("description", text)}
+            onChangeText={(text) =>
+              handleInputChange("description", text, setExpenseData)
+            }
           />
           <TextInput
             style={styles.input}
             placeholder="Date"
             value={expenseData.date}
-            onChangeText={(text) => handleExpenseChange("date", text)}
+            onChangeText={(text) =>
+              handleInputChange("date", text, setExpenseData)
+            }
           />
           <TextInput
             style={styles.input}
             placeholder="Notes (optional)"
             value={expenseData.notes}
-            onChangeText={(text) => handleExpenseChange("notes", text)}
+            onChangeText={(text) =>
+              handleInputChange("notes", text, setExpenseData)
+            }
           />
           <Picker
             selectedValue={expenseData.categoryId}
             style={styles.picker}
             onValueChange={(itemValue) =>
-              handleExpenseChange("categoryId", itemValue)
+              handleInputChange("categoryId", itemValue, setExpenseData)
             }
           >
             <Picker.Item label="Select Category" value="" />
-            {Array.isArray(categories) && categories.length > 0 ? (
-              categories.map((category) => (
-                <Picker.Item
-                  key={category.id}
-                  label={category.name}
-                  value={category.id}
-                />
-              ))
-            ) : (
-              <Picker.Item label="No categories available" value="" />
-            )}
+            {categories.map((category) => (
+              <Picker.Item
+                key={category.id}
+                label={category.name}
+                value={category.id}
+              />
+            ))}
           </Picker>
           <Button title="Submit Expense" onPress={handleExpenseSubmit} />
         </View>
-      ) : (
+      )}
+
+      {activeForm === "category" && (
         <View style={styles.form}>
           <TextInput
             style={styles.input}
             placeholder="Category Name"
             value={categoryData.name}
-            onChangeText={(text) => handleCategoryChange("name", text)}
+            onChangeText={(text) =>
+              handleInputChange("name", text, setCategoryData)
+            }
           />
           <Button title="Submit Category" onPress={handleCategorySubmit} />
+        </View>
+      )}
+
+      {activeForm === "budget" && (
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="Budget Limit"
+            keyboardType="numeric"
+            value={budgetData.limit}
+            onChangeText={(text) =>
+              handleInputChange("limit", text, setBudgetData)
+            }
+          />
+          <Picker
+            selectedValue={budgetData.categoryId}
+            style={styles.picker}
+            onValueChange={(itemValue) =>
+              handleInputChange("categoryId", itemValue, setBudgetData)
+            }
+          >
+            <Picker.Item label="Select Category" value="" />
+            {categories.map((category) => (
+              <Picker.Item
+                key={category.id}
+                label={category.name}
+                value={category.id}
+              />
+            ))}
+          </Picker>
+          <Button title="Submit Budget" onPress={handleBudgetSubmit} />
         </View>
       )}
     </View>

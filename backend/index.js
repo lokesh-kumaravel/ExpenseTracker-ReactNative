@@ -10,6 +10,8 @@ const authRoutes = require("./routes/auth");
 const AddRoute = require("./routes/AddRoute");
 const ExpenseRoute = require("./routes/ExpenseRoute");
 const SalesRoute = require("./routes/SalesRoute");
+const calculateAvailableBalance = require("./services/BalanceCalculator");
+const Budget = require("./routes/BudgetRoute");
 
 const app = express();
 
@@ -30,8 +32,28 @@ app.use("/api/categories", AddRoute);
 app.use("/api", AddRoute);
 app.use("/api", ExpenseRoute);
 app.use("/api", SalesRoute);
+app.use("/api", Budget);
+
 app.get("/", (req, res) => {
   res.send("Hello, this is your backend server!");
+});
+
+app.get("/api/balance/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await calculateAvailableBalance(userId);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching balance data",
+      error: error.message,
+    });
+  }
 });
 
 const PORT = process.env.PORT || 5000;

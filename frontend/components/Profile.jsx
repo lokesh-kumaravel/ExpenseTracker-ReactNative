@@ -25,20 +25,6 @@ const ProfilePage = ({ navigation }) => {
     salary: "",
   });
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await axios.get("/api/users/me");
-  //       setUser(response.data);
-  //       setUpdatedUser(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //       Alert.alert("Error", "Failed to load user data.");
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, []);
-
   const handleChange = (field, value) => {
     setUpdatedUser({ ...updatedUser, [field]: value });
   };
@@ -171,29 +157,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfilePage;
-
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-
-// const Profile = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Welcome to the Profile Page!</Text>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "#fff",
-//   },
-//   text: {
-//     fontSize: 18,
-//     fontWeight: "bold",
-//   },
-// });
-
-// export default Profile;

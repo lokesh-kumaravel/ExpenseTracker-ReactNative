@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
-import { Calendar } from "react-native-calendars"; // Import the calendar component
+import { Calendar } from "react-native-calendars";
 
 const predefinedExpenses = [
   { category: { name: "Food" }, amount: 100 },

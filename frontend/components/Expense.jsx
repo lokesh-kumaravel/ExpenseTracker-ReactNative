@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Calendar } from "react-native-calendars"; // Import the calendar component
+import { Calendar } from "react-native-calendars";
 import BarChartExample from "./BarChartExample";
 import Transaction from "./Transaction";
 import { ScrollView } from "react-native-web";
@@ -15,13 +15,11 @@ const Expense = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Your Expense</Text>
-      <ScrollView
-        showsVerticalScrollIndicator={false} // This hides the vertical scrollbar (if needed)
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Calendar
           style={{
-            width: "100%", // Adjust width to fit the container or a specific value
-            height: 300, // Set a custom height (you can use px or percentage)
+            width: "100%",
+            height: 300,
             backgroundColor: "#f3f3f3",
           }}
           current={"2024-11-20"}
@@ -55,7 +53,6 @@ const Expense = () => {
             {
               flexDirection: "row",
               justifyContent: "space-evenly",
-              // alignContent: "center", alignItems: "center",
               paddingTop: "3%",
             },
           ]}
@@ -109,7 +106,6 @@ const styles = StyleSheet.create({
   box: {
     width: 160,
     height: 140,
-    // borderWidth: 2,
     borderRadius: 20,
   },
   text1: {
@@ -118,8 +114,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // justifyContent: "flex-start",
-    // alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
   },
